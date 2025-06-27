@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}POS - Sistem Kasir{% endblock %}
+{% block page_title %}Point of Sale{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="main-content d-flex flex-column" style="height: calc(100vh - 40px)">
+                <h3 class="mb-3"><i class="fas fa-boxes me-2"></i>Daftar Produk</h3>
+                <div class="mb-4">
+                    <input type="text" class="form-control" id="searchProduct" placeholder="🔍 Cari produk berdasarkan nama atau kategori...">
+                </div>
+                <div class="row g-3" id="productsGrid" style="flex: 1; overflow-y: auto; align-content: flex-start">
+                    {% for product in products %}
+                        <div class="col-md-6 col-lg-4 product-item"
+                             data-id="{{ product.id }}"
+                             data-name="{{ product.name }}"
+                             data-price="{{ product.price }}"
+                             data-stock="{{ product.stock }}"
+                             data-category="{{ product.category|lower }}">
+                            <div class="card h-100 product-card" onclick="addToCart(this)">
+                                <div class="card-body text-center d-flex flex-column">
+                                    <h6 class="card-title fw-bold">{{ product.name }}</h6>
+                                    <p class="card-text text-primary fs-5 mb-1">Rp {{ "{:,.0f}".format(product.price) }}</p>
+                                    <div class="mt-auto">
+                                        <span class="badge bg-info">{{ product.category }}</span>
+                                        <small class="text-muted d-block mt-2">Stok: {{ product.stock }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="main-content position-sticky d-flex flex-column" style="top: 20px; height: calc(100vh - 40px)">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-shopping-basket me-2"></i>Keranjang</h4>
+                    <button class="btn btn-outline-danger btn-sm" onclick="clearCart()"><i class="fas fa-trash me-1"></i> Kosongkan</button>
+                </div>
+                <div class="flex-grow-1" style="overflow-y: auto;">
+                    <div id="cartItems"></div>
+                    <div class="text-center text-muted py-5 h-100 d-flex flex-column justify-content-center align-items-center" id="emptyCart">
+                        <i class="fas fa-cart-arrow-down fa-3x mb-2"></i>
+                        <p>Keranjang masih kosong</p>
+                    </div>
+                </div>
+                <div id="cartSummary" style="display: none;">
+                    <div class="border-top pt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span> <span id="subtotal" class="fw-bold">Rp 0</span>
+                        </div>
+
+                        <div id="tax-row-container"></div>
+
+                        <div class="d-flex justify-content-between mb-3 fw-bold fs-5 text-primary">
+                            <span>TOTAL:</span> <span id="total">Rp 0</span>
+                        </div>
+                        <button class="btn btn-theme w-100 fs-5" onclick="checkout()">
+                            <i class="fas fa-cash-register me-2"></i>Bayar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="transactionSuccessModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Transaksi Berhasil</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center">Transaksi telah berhasil diproses.</p>
+                    <div class="mb-3">
+                        <label class="form-label">ID Transaksi:</label>
+                        <input type="text" class="form-control" id="ts-id" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total Belanja:</label>
+                        <input type="text" class="form-control" id="ts-total" readonly>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="ts-amount-paid" class="form-label"><strong>Jumlah Uang Tunai (Rp):</strong></label>
+                        <input type="number" class="form-control form-control-lg" id="ts-amount-paid" placeholder="Masukkan jumlah pembayaran...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kembalian:</label>
+                        <input type="text" class="form-control form-control-lg" id="ts-change" readonly style="font-weight: bold; color: var(--success-color)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary-theme" data-bs-dismiss="modal">Tutup & Transaksi Baru</button>
+                    <button type="button" class="btn btn-theme" id="print-receipt-btn" disabled><i class="fas fa-print me-1"></i> Cetak Struk</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1060; align-items: center; justify-content: center">
+        <div class="spinner-border text-light" style="width: 3rem; height: 3rem" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        window.posConfig = {
+            taxRatePercent: {{ tax_rate or 10 }},
+            processTransactionUrl: "{{ url_for('process_transaction') }}",
+            username: "{{ session.username or 'N/A' }}"
+        };
+    </script>
+    
+    <script src="{{ url_for('static', filename='js/pos.js') }}"></script>
+{% endblock %}

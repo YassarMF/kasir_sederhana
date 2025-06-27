@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Laporan Penjualan - Sistem Kasir{% endblock %}
+{% block page_title %}Laporan Penjualan{% endblock %}
+{% block content %}
+    <div class="main-content" style="min-height: calc(100vh - 40px);">
+        <h2 class="mb-4">
+            <i class="fas fa-chart-line me-2"></i>Laporan Penjualan
+        </h2>
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label for="start_date" class="form-label">Tanggal Mulai:</label>
+                        <input type="date"
+                               class="form-control"
+                               id="start_date"
+                               name="start_date"
+                               value="{{ start_date }}">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="end_date" class="form-label">Tanggal Akhir:</label>
+                        <input type="date"
+                               class="form-control"
+                               id="end_date"
+                               name="end_date"
+                               value="{{ end_date }}">
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-theme">
+                            <i class="fas fa-filter me-2"></i>Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5>
+                    <i class="fas fa-receipt me-2"></i>Daftar Transaksi Individual
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if transactions %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID Transaksi</th>
+                                    <th>Tanggal</th>
+                                    <th>Kasir</th>
+                                    <th>Total</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trx in transactions %}
+                                    <tr>
+                                        <td>#{{ trx.id }}</td>
+                                        <td>{{ trx.transaction_date }}</td>
+                                        <td>{{ trx.cashier_name or 'N/A' }}</td>
+                                        <td>Rp {{ "{:,.0f}".format(trx.total_amount) }}</td>
+                                        <td class="d-flex gap-2">
+                                            <form action="{{ url_for('delete_transaction', transaction_id=trx.id) }}"
+                                                  method="POST"
+                                                  onsubmit="return confirm('Batalkan transaksi ini? Stok akan dikembalikan.');">
+                                                <button type="submit"
+                                                        class="btn btn-warning btn-sm"
+                                                        title="Batalkan Transaksi">
+                                                    <i class="fas fa-undo"></i> Batal
+                                                </button>
+                                            </form>
+                                            <form action="{{ url_for('delete_transaction_permanent', transaction_id=trx.id) }}"
+                                                  method="POST"
+                                                  onsubmit="return confirm('PERINGATAN!\nAnda akan menghapus permanen transaksi ini tanpa mengembalikan stok. Aksi ini tidak dapat diurungkan. Lanjutkan?');">
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Hapus Permanen">
+                                                    <i class="fas fa-trash-alt"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning text-center">Tidak ada data transaksi untuk periode ini.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

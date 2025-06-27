@@ -1,0 +1,13 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+env/
+.env
+
+# Database
+# Hapus tanda pagar '#' di bawah jika Anda TIDAK ingin database diunggah.
+# Sangat disarankan untuk tidak mengunggah file database ke repositori publik.
+kasir.db

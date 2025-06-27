@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Tambah Pengguna - Sistem Kasir{% endblock %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="main-content">
+                <h2 class="mb-4">
+                    <i class="fas fa-user-plus me-2"></i>Tambah Pengguna Baru
+                </h2>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text"
+                               class="form-control"
+                               id="username"
+                               name="username"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password"
+                               class="form-control"
+                               id="password"
+                               name="password"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Peran (Role)</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="cashier">Kasir</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for("users") }}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Kembali</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Simpan Pengguna
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

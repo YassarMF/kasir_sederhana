@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Edit Produk - Sistem Kasir{% endblock %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="main-content">
+                <h2 class="mb-4">
+                    <i class="fas fa-edit me-2"></i>Edit Produk
+                </h2>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nama Produk</label>
+                        <input type="text"
+                               class="form-control"
+                               id="name"
+                               name="name"
+                               value="{{ product[1] }}"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Harga (Rp)</label>
+                        <input type="number"
+                               class="form-control"
+                               id="price"
+                               name="price"
+                               value="{{ product[2] }}"
+                               required
+                               min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Stok</label>
+                        <input type="number"
+                               class="form-control"
+                               id="stock"
+                               name="stock"
+                               value="{{ product[3] }}"
+                               required
+                               min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Kategori</label>
+                        <input type="text"
+                               class="form-control"
+                               id="category"
+                               name="category"
+                               value="{{ product[4] }}"
+                               placeholder="Contoh: Makanan, Minuman, Snack">
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for("products") }}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Batal</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Produk
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

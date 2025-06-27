@@ -1,0 +1,22 @@
+/
+├── app.py              # Logika utama aplikasi Flask Anda
+├── kasir.db
+├── static/
+│   ├── css/
+│   │   └── style.css   # Semua kode CSS akan dipindahkan ke sini
+│   └── js/
+│       ├── main.js         # JavaScript umum (seperti toast & sidebar)
+│       ├── pos.js          # JavaScript khusus untuk halaman Point of Sale
+│       └── product_search.js # JavaScript untuk fungsi pencarian di halaman produk
+└── templates/
+    ├── base.html
+    ├── login.html
+    ├── dashboard.html
+    ├── pos.html
+    ├── products.html
+    ├── add_product.html
+    ├── edit_product.html
+    ├── reports.html
+    ├── users.html
+    ├── add_user.html
+    └── settings.html
