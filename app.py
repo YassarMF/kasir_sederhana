@@ -20,11 +20,13 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+project_dir = os.path.dirname(os.path.abspath(__file__))
+database_path = os.path.join(project_dir, 'kasir.db')
 
 # --- FUNGSI DATABASE ---
 def get_db_connection():
     """Membuat koneksi ke database dan mengembalikan objek koneksi."""
-    conn = sqlite3.connect("kasir.db")
+    conn = sqlite3.connect(database_path) # Gunakan path yang sudah kita tentukan
     conn.row_factory = sqlite3.Row
     return conn
 
