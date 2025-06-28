@@ -25,8 +25,7 @@ database_path = os.path.join(project_dir, 'kasir.db')
 
 # --- FUNGSI DATABASE ---
 def get_db_connection():
-    """Membuat koneksi ke database dan mengembalikan objek koneksi."""
-    conn = sqlite3.connect(database_path) # Gunakan path yang sudah kita tentukan
+    conn = sqlite3.connect(database_path)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -565,6 +564,8 @@ def get_settings():
     })
 
 
-if __name__ == "__main__":
-    init_db()
-    app.run(debug=True, host="0.0.0.0", port=5001)
+#if __name__ == "__main__":
+#   init_db()
+#   app.run(debug=True, host="0.0.0.0", port=5001)
+
+init_db()
