@@ -2,77 +2,90 @@
 {% block title %}Pengaturan - Sistem Kasir{% endblock %}
 {% block page_title %}Pengaturan Sistem{% endblock %}
 {% block content %}
-    <div class="main-content" style="min-height: calc(100vh - 40px);">
-        <h2 class="mb-4">
-            <i class="fas fa-cogs me-2"></i>Pengaturan
-        </h2>
-        {% if session.role == 'admin' %}
-            <form method="POST" action="{{ url_for("settings") }}">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Pengaturan Pajak</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="tax_rate" class="form-label">Persentase Pajak (%)</label>
-                            <div class="input-group">
-                                <input type="number"
-                                       step="0.1"
-                                       class="form-control"
-                                       id="tax_rate"
-                                       name="tax_rate"
-                                       value="{{ setting['value'] if setting else '10' }}"
-                                       required
-                                       min="0">
-                                <span class="input-group-text">%</span>
-                            </div>
-                            <small class="form-text text-muted">Nilai ini akan digunakan untuk menghitung pajak pada semua transaksi baru.</small>
-                        </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <button type="submit" class="btn btn-theme">
-                            <i class="fas fa-save me-2"></i>Simpan Pengaturan
-                        </button>
+<div class="main-content" style="min-height: calc(100vh - 100px);">
+    <h2 class="mb-4">
+        <i class="fas fa-cogs me-2"></i>Pengaturan
+    </h2>
+
+    {% if session.role == 'admin' %}
+    <form method="POST" action="{{ url_for('settings') }}">
+        <div class="card">
+            <div class="card-header">
+                <h5>Pengaturan Pajak</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="tax_rate" class="form-label">Persentase Pajak (%)</label>
+                    <div class="input-group">
+                        <input type="number" step="0.1" class="form-control" id="tax_rate" name="tax_rate" value="{{ setting['value'] if setting else '10' }}" required min="0">
+                        <span class="input-group-text">%</span>
                     </div>
                 </div>
-            </form>
-        {% endif %}
-        <div class="card {% if session.role == 'admin' %}mt-4{% endif %}">
-            <div class="card-header">
-                <h5>Pengaturan Tampilan</h5>
             </div>
-            <div class="card-body d-flex align-items-center justify-content-between">
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-theme">
+                    <i class="fas fa-save me-2"></i>Simpan Pengaturan
+                </button>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+
+    <div class="card {% if session.role == 'admin' %}mt-4{% endif %}">
+        <div class="card-header">
+            <h5>Pengaturan Tampilan</h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
                 <label class="form-check-label" for="themeSwitchToggle">Gunakan Tema Gelap (Dark Mode)</label>
                 <div class="form-check form-switch">
-                    <input class="form-check-input"
-                           type="checkbox"
-                           role="switch"
-                           id="themeSwitchToggle"
-                           style="height: 1.2rem;
-                                  width: 2.2rem">
+                    <input class="form-check-input" type="checkbox" role="switch" id="themeSwitchToggle" style="height: 1.2rem; width: 2.2rem;">
+                </div>
+            </div>
+
+            <div>
+                <label class="form-label">Palet Warna Tema</label>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn theme-color-swatch" title="Biru Laut" data-primary="#007BFF" data-secondary="#34C7FF" style="background-color: #007BFF;"></button>
+                    <button class="btn theme-color-swatch" title="Hijau Hutan" data-primary="#10B981" data-secondary="#34D399" style="background-color: #10B981;"></button>
+                    <button class="btn theme-color-swatch" title="Merah Anggur" data-primary="#EF4444" data-secondary="#F87171" style="background-color: #EF4444;"></button>
+                    <button class="btn theme-color-swatch" title="Ungu Senja" data-primary="#8B5CF6" data-secondary="#A78BFA" style="background-color: #8B5CF6;"></button>
+                    <input type="color" class="form-control form-control-color" id="themeColorPicker" value="#007BFF" title="Pilih warna custom">
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<style>
+/* CSS khusus untuk swatch warna di halaman ini */
+.theme-color-swatch {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 1px var(--border-color);
+    transition: transform 0.2s ease;
+}
+.theme-color-swatch:hover {
+    transform: scale(1.1);
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const themeSwitch = document.getElementById('themeSwitchToggle');
     const rootElement = document.documentElement;
 
-    // --- PERBAIKAN BUG SAKLAR ---
-    // Cek status tema langsung dari sumbernya (localStorage) untuk mengatur posisi saklar.
+    // --- Logika Tema Gelap/Terang (Sudah ada) ---
+    const themeSwitch = document.getElementById('themeSwitchToggle');
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         themeSwitch.checked = true;
     } else {
         themeSwitch.checked = false;
     }
-
-    // Event listener ini sudah benar, tidak perlu diubah.
-    // Ia akan mengubah tema secara visual DAN menyimpan ke localStorage.
     themeSwitch.addEventListener('change', function() {
         if (this.checked) {
             rootElement.classList.add('dark-mode');
@@ -82,6 +95,47 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('theme', 'light');
         }
     });
+
+    // --- LOGIKA BARU: Pengaturan Palet Warna ---
+    const colorPicker = document.getElementById('themeColorPicker');
+    const colorSwatches = document.querySelectorAll('.theme-color-swatch');
+
+    // Fungsi untuk menerapkan dan menyimpan palet warna
+    function applyThemePalette(primaryColor, secondaryColor) {
+        // Terapkan ke CSS Variables
+        rootElement.style.setProperty('--primary-color', primaryColor);
+        rootElement.style.setProperty('--primary-accent-color', primaryColor); // samakan warna aksen
+        rootElement.style.setProperty('--secondary-color', secondaryColor);
+        
+        // Simpan ke localStorage
+        localStorage.setItem('theme_primary_color', primaryColor);
+        localStorage.setItem('theme_secondary_color', secondaryColor);
+        
+        // Sinkronkan nilai color picker
+        colorPicker.value = primaryColor;
+    }
+
+    // Event listener untuk color picker (hanya mengubah 1 warna, menghasilkan tema solid)
+    colorPicker.addEventListener('input', function() {
+        const customColor = this.value;
+        // Untuk picker, primary dan secondary color disamakan agar menjadi warna solid
+        applyThemePalette(customColor, customColor);
+    });
+
+    // Event listener untuk tombol swatch preset
+    colorSwatches.forEach(swatch => {
+        swatch.addEventListener('click', function() {
+            const primary = this.dataset.primary;
+            const secondary = this.dataset.secondary;
+            applyThemePalette(primary, secondary);
+        });
+    });
+
+    // Setel nilai awal color picker saat halaman dimuat
+    const savedPrimaryColor = localStorage.getItem('theme_primary_color');
+    if (savedPrimaryColor) {
+        colorPicker.value = savedPrimaryColor;
+    }
 });
 </script>
 {% endblock %}

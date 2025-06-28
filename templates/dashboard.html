@@ -9,35 +9,27 @@
         </h1>
         <div class="row">
             <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stats-card stats-card-1">
+                <div class="stats-card stats-card-1 animate-card" style="animation-delay: 0.1s;">
                     <h3>Rp {{ "{:,.0f}".format(today_sales) }}</h3>
-                    <p>
-                        <i class="fas fa-calendar-day me-1"></i> Penjualan Hari Ini
-                    </p>
+                    <p><i class="fas fa-calendar-day me-1"></i> Penjualan Hari Ini</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stats-card stats-card-2">
+                <div class="stats-card stats-card-2 animate-card" style="animation-delay: 0.2s;">
                     <h3>{{ total_products }}</h3>
-                    <p>
-                        <i class="fas fa-box me-1"></i> Total Produk
-                    </p>
+                    <p><i class="fas fa-box me-1"></i> Total Produk</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stats-card stats-card-3">
+                <div class="stats-card stats-card-3 animate-card" style="animation-delay: 0.3s;">
                     <h3>{{ low_stock_count }}</h3>
-                    <p>
-                        <i class="fas fa-exclamation-triangle me-1"></i> Stok Menipis
-                    </p>
+                    <p><i class="fas fa-exclamation-triangle me-1"></i> Stok Menipis</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stats-card stats-card-4">
+                <div class="stats-card stats-card-4 animate-card" style="animation-delay: 0.4s;">
                     <h3>{{ recent_transactions|length }}</h3>
-                    <p>
-                        <i class="fas fa-receipt me-1"></i> Transaksi Terbaru
-                    </p>
+                    <p><i class="fas fa-receipt me-1"></i> Transaksi Terbaru</p>
                 </div>
             </div>
         </div>

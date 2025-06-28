@@ -77,6 +77,10 @@ body {
     min-height: 100vh;
 }
 
+body:not(.sidebar-open) {
+    overflow-x: hidden;
+}
+
 /* --- Layout: Sidebar & Main Content --- */
 .sidebar {
     width: 260px;
@@ -229,16 +233,23 @@ body {
 }
 
 .stats-card-1 {
-    background: linear-gradient(135deg, var(--stats-1-start), var(--stats-1-end));
+    /* Menggunakan variabel utama */
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
 }
 .stats-card-2 {
-    background: linear-gradient(135deg, var(--stats-2-start), var(--stats-2-end));
+    /* Menggunakan filter untuk variasi warna */
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    filter: saturate(1.2) brightness(1.1);
 }
 .stats-card-3 {
-    background: linear-gradient(135deg, var(--stats-3-start), var(--stats-3-end));
+    /* Menggunakan filter untuk variasi warna */
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    filter: hue-rotate(45deg);
 }
 .stats-card-4 {
-    background: linear-gradient(135deg, var(--stats-4-start), var(--stats-4-end));
+    /* Menggunakan filter untuk variasi warna */
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    filter: hue-rotate(-45deg);
 }
 
 /* --- Components: Buttons --- */
@@ -251,8 +262,10 @@ body {
 }
 
 .btn-theme:hover {
-    background-color: var(--btn-theme-hover-bg);
-    border-color: var(--btn-theme-hover-bg);
+    /* Menggunakan filter untuk menggelapkan warna apapun yang dipilih */
+    filter: brightness(90%);
+    background-color: var(--primary-accent-color); /* Pastikan background tetap ada */
+    border-color: var(--primary-accent-color);
     color: #fff;
 }
 
@@ -356,6 +369,12 @@ html.dark-mode .btn-close {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
     border-radius: 10px;
+    
+    /* --- TAMBAHKAN PROPERTI DI BAWAH INI --- */
+    position: sticky; /* atau 'fixed' jika Anda ingin menimpa konten lain */
+    top: 15px; /* Beri jarak dari atas layar */
+    z-index: 1020; /* Pastikan selalu di atas konten lain */
+    justify-content: space-between;
 }
 
 #sidebar-toggle {
@@ -422,4 +441,62 @@ html.dark-mode .btn-close {
 .product-card:hover { 
     transform: translateY(-5px); 
     box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+}
+
+/* --- TAMBAHAN: KEYFRAMES UNTUK ANIMASI --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98); /* Mulai dari skala 98% */
+  }
+  to {
+    opacity: 1;
+    transform: scale(1); /* Selesai di skala 100% */
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.content-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-card {
+    /* Atur agar elemen tidak terlihat sebelum animasi dimulai */
+    opacity: 0;
+    animation: popIn 0.5s ease-out forwards;
+}
+
+/* POS-specific styles */
+.product-card { 
+    cursor: pointer; 
+    transition: all 0.2s ease-in-out; 
+}
+.product-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+}
+
+/* Aturan untuk layar kecil (di bawah 992px) */
+@media (max-width: 991.98px) {
+    .pos-container .pos-cart-col {
+        display: none; /* Sembunyikan keranjang secara default */
+    }
+
+    /* Saat keranjang aktif, sembunyikan produk dan tampilkan keranjang */
+    .pos-container.cart-active .pos-products-col {
+        display: none;
+    }
+    .pos-container.cart-active .pos-cart-col {
+        display: block;
+    }
 }

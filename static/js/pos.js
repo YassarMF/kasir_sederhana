@@ -1,4 +1,4 @@
-/* static/js/pos.js - VERSI FINAL DENGAN LOGIKA BARU */
+/* static/js/pos.js */
 
 // --- Variabel Global ---
 const processTransactionUrl = window.posConfig.processTransactionUrl;
@@ -82,14 +82,13 @@ function clearCart() {
 }
 
 
-// --- FUNGSI UPDATE TAMPILAN ---
+// --- Fungsi Update Tampilan ---
 function updateCartDisplay() {
     const cartItemsDiv = document.getElementById("cartItems");
     const emptyCartDiv = document.getElementById("emptyCart");
     const cartSummaryDiv = document.getElementById("cartSummary");
     const taxContainer = document.getElementById('tax-row-container');
 
-    // Kosongkan kontainer pajak setiap kali fungsi ini dipanggil
     taxContainer.innerHTML = '';
 
     if (cart.length === 0) {
@@ -116,7 +115,6 @@ function updateCartDisplay() {
         document.getElementById("subtotal").innerText = formatRupiah(subtotal);
         document.getElementById("total").innerText = formatRupiah(total);
         
-        // Logika sesuai saran Anda: Hanya buat elemen jika pajak > 0
         if (taxRate > 0) {
             const taxRowHTML = `
                 <div class="d-flex justify-content-between mb-2">
@@ -126,6 +124,15 @@ function updateCartDisplay() {
             `;
             taxContainer.innerHTML = taxRowHTML;
         }
+    }
+
+    // Perbarui badge jumlah item di tombol keranjang mobile
+    const cartBadge = document.getElementById('cart-item-count-badge');
+    if (cart.length > 0) {
+        cartBadge.innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartBadge.style.display = 'inline-block';
+    } else {
+        cartBadge.style.display = 'none';
     }
     
     saveCart();
@@ -215,6 +222,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     loadCart();
     initializeSearch();
+    
+    // --- Logika untuk Tombol POS Mobile ---
+    const posContainer = document.querySelector('.pos-container');
+    const viewCartBtn = document.getElementById('viewCartBtn');
+    const backToProductsBtn = document.getElementById('backToProductsBtn');
+
+    if (viewCartBtn) {
+        viewCartBtn.addEventListener('click', () => {
+            posContainer.classList.add('cart-active');
+        });
+    }
+
+    if (backToProductsBtn) {
+        backToProductsBtn.addEventListener('click', () => {
+            posContainer.classList.remove('cart-active');
+        });
+    }
     
     const amountPaidInput = document.getElementById('ts-amount-paid');
     const changeOutput = document.getElementById('ts-change');

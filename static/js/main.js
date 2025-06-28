@@ -47,26 +47,31 @@ function showToast(message, type = 'info') {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Logika untuk pengecekan tema awal dan event listener saklar tema
-    // dipisahkan ke base.html (untuk load cepat) dan settings.html (khusus untuk halamannya)
-
     // Setup sidebar toggle hanya jika elemen sidebar ada
-    if (document.querySelector('.sidebar')) {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const sidebarOverlay = document.querySelector('.sidebar-overlay');
-        
+        const body = document.body;
+
+        const openSidebar = () => {
+            sidebar.classList.add('sidebar-show');
+            sidebarOverlay.classList.add('active');
+            body.classList.add('sidebar-open'); // Tambahkan kelas saat sidebar terbuka
+        };
+
+        const closeSidebar = () => {
+            sidebar.classList.remove('sidebar-show');
+            sidebarOverlay.classList.remove('active');
+            body.classList.remove('sidebar-open'); // Hapus kelas saat sidebar tertutup
+        };
+
         if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
-                document.querySelector('.sidebar').classList.toggle('sidebar-show');
-                sidebarOverlay.classList.toggle('active');
-            });
+            sidebarToggle.addEventListener('click', openSidebar);
         }
         
         if (sidebarOverlay) {
-            sidebarOverlay.addEventListener('click', function() {
-                document.querySelector('.sidebar').classList.remove('sidebar-show');
-                sidebarOverlay.classList.remove('active');
-            });
+            sidebarOverlay.addEventListener('click', closeSidebar);
         }
     }
 });

@@ -18,13 +18,27 @@
 
     <script>
         (function() {
+            // Terapkan tema gelap/terang
             const currentTheme = localStorage.getItem('theme');
             if (currentTheme === 'dark') {
-                document.documentElement.classList.add('dark-mode'); // Terapkan di <html>
+                document.documentElement.classList.add('dark-mode');
             } else if (currentTheme === 'light') {
                 document.documentElement.classList.remove('dark-mode');
             } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.documentElement.classList.add('dark-mode');
+            }
+
+            // --- BARU: Terapkan PALET WARNA (primary & secondary) ---
+            const primaryColor = localStorage.getItem('theme_primary_color');
+            const secondaryColor = localStorage.getItem('theme_secondary_color');
+            
+            if (primaryColor) {
+                document.documentElement.style.setProperty('--primary-color', primaryColor);
+                // Juga set warna aksen agar konsisten
+                document.documentElement.style.setProperty('--primary-accent-color', primaryColor); 
+            }
+            if (secondaryColor) {
+                document.documentElement.style.setProperty('--secondary-color', secondaryColor);
             }
         })();
     </script>
@@ -91,7 +105,7 @@
     <div class="sidebar-overlay"></div>
     {% endif %}
 
-    <main class="{% if session.user_id %}main-wrapper{% else %}login-wrapper{% endif %}">
+    <main class="{% if session.user_id %}main-wrapper{% else %}login-wrapper{% endif %} content-fade-in">
         {% if session.user_id %}
         <div class="top-navbar">
             <button id="sidebar-toggle" class="me-3">
@@ -100,6 +114,10 @@
             <h5 class="m-0 fw-bold">
                 {% block page_title %}{% endblock %}
             </h5>
+            
+            <div class="ms-auto">
+                {% block top_navbar_actions %}{% endblock %}
+            </div>
         </div>
         {% endif %}
 
